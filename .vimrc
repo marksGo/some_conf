@@ -38,7 +38,7 @@ runtime! debian.vim
    " If using a dark background within the editing area and syntax highlighting
    " turn on this option as well
    " you can find the colorschme with command :colorscheme<space> <tab>
-   set background=dark
+   set background=dark                                    
    colorscheme desert
    hi Noraml ctermbg=black
 
@@ -64,7 +64,7 @@ set smartcase           " Do smart case matching
 set incsearch           " Incremental search
 set autowrite           " Automatically save before commands like :next and :make
 set hidden              " Hide buffers when they are abandoned
-set mouse=              " disable mouse usage 
+set mouse=a             " disable mouse usage 
 set number
 "set relativenumber
 set hls                 "highlight the match pattern when you search
@@ -115,7 +115,7 @@ set signcolumn=yes
 "nmap works in normal mode, noremap means no recursion map
 "<esc> means Escape key,<C-p> means Ctrl and p, <Cr> means Enter key
 "<Up>,<Down>,<left>,<right> means (sorry,i don't konw how to type them
-"<nop> means no meaning,like null,<leader> is the maopleader
+"<nop> means no meaning,like null,<leader> is the mapleader
 "if you want change a key mapping ,you must unmap it first
 "you need these commands:unmap,iunmap,vunmap,etc
 let mapleader=" "
@@ -135,7 +135,9 @@ noremap <C-j> 6j
 noremap H 7h
 noremap <C-k> 6k
 noremap L 7l
-
+"同时shiFft+backspace相当于6次退格
+inoremap <S-backspace> <C-h><C-h><C-h><C-h><C-h><C-h><C-h><C-h>
+ 
 "vim windows---------
 noremap s <nop>
 noremap sj :set nosplitbelow<Cr> :split<Cr>
@@ -199,15 +201,14 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
 
 
 "-----------------configuration for NERDTree---------
-" Start NERDTree and leave the cursor in other windows
-autocmd VimEnter * NERDTree | wincmd p
-
-" Start NERDTree. If a file is specified, move the cursor to its window.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
-
-" Close the tab if NERDTree is the only window remaining in it.
-autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
+"" Start NERDTree and leave the cursor in other windows
+"autocmd VimEnter * NERDTree | wincmd p
+"" Start NERDTree. If a file is specified, move the cursor to its window.
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+"
+"" Close the tab if NERDTree is the only window remaining in it.
+"autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 
 "show the lines of file
 let g:NERDTreeFileLines = 1
@@ -219,15 +220,17 @@ let g:NERDTreeFileLines = 1
 "    :PlugDiff to review the changes from the last update
 "    :PlugClean to remove plugins no longer in the list
 
+imap <C-d> <M> 
 call plug#begin()
 Plug 'itchyny/lightline.vim'
 Plug 'mhinz/vim-startify'
 Plug 'Yggdroot/LeaderF',{'do':'./install.sh'}
 Plug 'jiangmiao/auto-pairs'
+let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"'}
 Plug 'vim-airline/vim-airline'
+
 Plug 'vim-airline/vim-airline-themes'
 Plug 'connorholyday/vim-snazzy'
-
 
 
 " File navigation
@@ -268,8 +271,45 @@ Plug 'mattn/emmet-vim'
 Plug 'vim-scripts/indentpython.vim'
 
 " Markdown
+" :Tabularize /|   to align all |
+" :Tabularize /,   to align all ,
+" :Tabularize /\/\/ to align all //
+" :Tabularize /\s to align all space 
+" :tabularize /regex/ to align all regex(regular expression)
 Plug 'godlygeek/tabular' " type ;Tabularize /= to align the =
+
+":GenTocGFM to generate the toc contents; :UpdateToc will update it 
+"gx " 在浏览器中打开光标下的链接 <Plug>Markdown_OpenUrlUnderCursor
+"ge " 在 Vim 中编辑光标下的链接 <Plug>Markdown_EditUrlUnderCursor
+"][: " 跳转到下一个同级标题 <Plug>Markdown_MoveToNextSiblingHeader
+"[]: " 跳转到上一个同级标题 <Plug>Markdown_MoveToPreviousSiblingHeader
+"]h: " 跳转到当前标题 <Plug>Markdown_MoveToCurHeader
+"[[ "跳转上一个标题
+"]] "跳转下一个标题
+"]c "跳转到当前标题
+"]u "跳转到副标题
+"zr "打开下一级折叠
+"zR "打开所有折叠
+"zm "折叠当前段落
+"zM "折叠所有段落
+":Toc "显示目录
 Plug 'preservim/vim-markdown'
+" 不折叠（默认折叠）
+let g:vim_markdown_folding_disabled = 1
+" 支持 YAML frontmatter（用于 Hexo/Jekyll）
+let g:vim_markdown_frontmatter = 1
+" 支持任务列表
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_strikethrough = 1
+" 不识别数学公式为错误
+let g:vim_markdown_math = 1
+
+":GenTocMarked to generate toc
+":UpdateToc to update toc
+Plug 'mzlogin/vim-markdown-toc'
+"取消储存时自动更新目录
+let g:vmt_auto_update_on_save = 0
+
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install_sync() }, 'for' :['markdown', 'vim-plug'] }
 
 let g:vim_markdown_folding_disabled=1
@@ -282,13 +322,17 @@ let g:mkdp_auto_start = 0
 " by default it can be use in Markdown files only
 " default: 0
 let g:mkdp_command_for_global = 1
-
 " specify browser to open preview page
 " for path with space
 " valid: `/path/with\ space/xxx`
 " invalid: `/path/with\\ space/xxx`
 " default: ''
-let g:mkdp_browser = '/usr/bin/firefox'
+if has('win32') || has('win64') || has('win32unix')
+    let g:mkdp_browser = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+endif
+if has("linux")
+    let g:mkdp_browser = '/usr/bin/firefox'
+endif
 
 " options for Markdown rendering
 " mkit: markdown-it options for rendering
@@ -317,7 +361,8 @@ let g:mkdp_preview_options = {
     \ 'content_editable': v:false,
     \ 'disable_filename': 0,
     \ 'toc': {}
-    \ }
+    \}
+
 
 " set default theme (dark or light)
 " By default the theme is defined according to the preferences of the system
@@ -334,10 +379,45 @@ Plug 'vimwiki/vimwiki'
 " Bookmarks
 Plug 'kshenoy/vim-signature'
 
-" Other useful utilities
-Plug 'terryma/vim-multiple-cursors'
+"---------------vim-visual-muli------------------------
+"select words with Ctrl-n 
+"create cursors vertically with Ctrl-Down/Ctrl-Up
+"select one character at a time with Shift-Arrows
+"press n/N to get next/previous occurrence
+"press [/] to select next/previous cursor
+"press q to skip current and get next occurrence
+"press Q to remove current cursor/selection
+"start insert mode with i,a,I,A
+"Two main modes:
+"
+"in cursor mode commands work as they would in normal mode
+"in extend mode commands work as they would in visual mode
+"press Tab to switch between «cursor» and «extend» mode
+"Most vim commands work as expected (motions, r to replace characters, ~ to change case, etc). Additionally you can:
+"
+"run macros/ex/normal commands at cursors align cursors
+"transpose selections "add patterns with regex, or from visual mode
+"And more... of course, you can enter insert mode and autocomplete will work.  
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+
+"goyo.vim makes you focus on typing and writing
+":Goyo will enter or exit goyo mode
+":Goyo 20 will make your text witch have 20 columns
 Plug 'junegunn/goyo.vim' " distraction free writing mode
+
+"------------vim-surround--------------------------------------
+"vim-surround s design for the surrounded surround "()","{}","[]","""","''"
+"ys:yank surround; cs:change surround; ds:delete surround;
+"yss:yank surround whole line; css:change surround whole line; dss:delete surround whole line;
+"[ys,cs,ys] just like a motion
+"[ys,cs,ys][tect object][surrounded_char]
+"ysiw',ysiw",ysiw[,ysiw{:,yst'(t:tag)
+"ysst+your surround
+"cs"<p>,cst",
+"cs[{ you need make the cursor put on the "["
+"visual mode with S(not s),and input your surround characters and will add it
 Plug 'tpope/vim-surround' " type ysks' to wrap the word with '' or type cs'` to change 'word' to `word`
+
 Plug 'gcmt/wildfire.vim' " in Visual mode, type i' to select all text in '', or type i) i] i} ip
 Plug 'scrooloose/nerdcommenter' " in <space>cc to comment a line
 
@@ -361,7 +441,7 @@ call plug#end()
 
 let g:coc_global_extensions=[
             \ 'coc-python',
-            \  'coc-dictionary' ,
+            \ 'coc-dictionary' ,
             \  'coc-vimlsp',
             \  'coc-git',
              \ 'coc-marketplace',
@@ -435,4 +515,5 @@ hi CocMenuSel ctermbg=39 ctermfg=black cterm=bold
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
   endif
+
 
