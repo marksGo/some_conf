@@ -44,12 +44,9 @@ runtime! debian.vim
 
    " Uncomment the following to have Vim jump to the last position when
    " reopening a file
-   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe ormal! g'\"" | endif
-
- "Uncomment the following to have Vim load indentation rules and plugins
+   "   "Uncomment the following to have Vim load indentation rules and plugins
 "according to the detected filetype.
 filetype plugin indent on
-
 
 
 "Setting---------------------------------------------------------------------------
@@ -75,13 +72,13 @@ set textwidth=80
 set guifont=Consolas:h18:cANSI:qDRAFT
 set t_Co=256
 set nobackup
-set swapfile
+set noswapfile
 set undofile            "save the undo history to the undo-file"
 set undodir=~/.vim/.undo//   "set the undo-file's directory"
 set autochdir
 set backspace=start,eol,indent  "make backspace can delete
 set scrolloff=10
-set nowrap
+set wrap
 set cursorline
 set list
 set linebreak
@@ -103,11 +100,12 @@ set nowritebackup
 
 " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
 " delays and poor user experience
-set updatetime=3000
+set updatetime=300
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved
 set signcolumn=yes
+
 
 "Key Mapping--------------------------------------------------------------------
 "key mapping:map works in each mode, imap works in insert mode 
@@ -129,6 +127,12 @@ noremap <C-R> :source .vimrc<Cr>
 noremap <leader><leader> <Esc>/<++><Cr>:nohls<Cr>c4l
 nnoremap fl :r !figlet 
 
+
+noremap <buffer> j gj
+noremap <buffer> k gk
+noremap <buffer> gj j
+noremap <buffer> gk k
+
 "vim motion-----------
 noremap <C-j> 6j
 noremap H 7h
@@ -137,6 +141,18 @@ noremap L 7l
 "同时shiFft+backspace相当于6次退格
 inoremap <S-backspace> <C-h><C-h><C-h><C-h><C-h><C-h><C-h><C-h>
  
+" 启用 tags 文件支持
+"set tags=./tags;,tags;
+
+" 映射按键跳转功能
+"nnoremap <C-]> :tag <C-R><C-W><CR>        " 跳转到光标下的符号定义
+"nnoremap <C-T> <C-o>                       " 跳回原处
+"nnoremap <leader>t :!ctags -R .<CR>       " 生成 tags 文件
+
+"设置高亮 tag 名称（可选）
+"set tagcase=match                         " 保持大小写匹配
+
+
 "vim windows---------
 noremap s <nop>
 noremap sj :set nosplitbelow<Cr> :split<Cr>
@@ -237,7 +253,14 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Taglist
-Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
+"Plug 'preservim/tagbar'
+"nnoremap <F8> :TagbarToggle<CR>
+"let g:airline#extensions#tagbar#enabled = 1 
+"let g:airline#extensions#tagbar#flags = 'f' 
+
+"if has('win32') || has('win64') || has('win32unix')
+   " let g:tagbar_ctags_bin='C:\Users\34042\ctags-p6.1.-x64\ctags.exe'
+"endif
 
 " Error checking
 Plug 'w0rp/ale'
@@ -257,6 +280,11 @@ Plug 'rhysd/conflict-marker.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-signify'
 Plug 'gisphm/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
+
+"vim mode switch : normal for english; insert for chinese
+Plug 'lyokha/vim-xkbswitch' 
+let g:XkbSwitchLib = 'C:\Program Files\Vim\vim91\libxkbswitch64.dll' 
+let g:XkbSwitchEnabled = 1  
 
 " HTML, CSS, JavaScript, PHP, JSON, etc.
 Plug 'elzr/vim-json'
@@ -508,6 +536,8 @@ hi CocMenuSel ctermbg=39 ctermfg=black cterm=bold
 
 
 "},hey got you ^-^!
+
+"auto save the file 
 function! AutoSave()
     if &modified
       silent w
@@ -520,7 +550,6 @@ augroup AutoSaveGroup
     autocmd CursorHold * call AutoSave()
     autocmd CursorHoldI * call AutoSave()
 augroup END
-
 
 "------------------------------------------------------------------------------------
 " Source a global configuration file if available
