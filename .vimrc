@@ -283,7 +283,10 @@ Plug 'gisphm/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
 
 "vim mode switch : normal for english; insert for chinese
 Plug 'lyokha/vim-xkbswitch' 
-let g:XkbSwitchLib = 'C:\Program Files\Vim\vim91\libxkbswitch64.dll' 
+
+if has('win32') || has('win64') || has('win32unix')
+    let g:XkbSwitchLib = 'C:\Program Files\Vim\vim91\libxkbswitch64.dll' 
+endif
 let g:XkbSwitchEnabled = 1  
 
 " HTML, CSS, JavaScript, PHP, JSON, etc.
