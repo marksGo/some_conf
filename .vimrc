@@ -75,7 +75,7 @@ set textwidth=80
 set guifont=Consolas:h18:cANSI:qDRAFT
 set t_Co=256
 set nobackup
-set noswapfile
+set swapfile
 set undofile            "save the undo history to the undo-file"
 set undodir=~/.vim/.undo//   "set the undo-file's directory"
 set autochdir
@@ -103,12 +103,11 @@ set nowritebackup
 
 " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
 " delays and poor user experience
-set updatetime=300
+set updatetime=3000
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved
 set signcolumn=yes
-
 
 "Key Mapping--------------------------------------------------------------------
 "key mapping:map works in each mode, imap works in insert mode 
@@ -509,6 +508,19 @@ hi CocMenuSel ctermbg=39 ctermfg=black cterm=bold
 
 
 "},hey got you ^-^!
+function! AutoSave()
+    if &modified
+      silent w
+      echom "Auto saved at " strftime("%H:%M:%S")
+    endif
+endfunction
+
+augroup AutoSaveGroup
+    autocmd!
+    autocmd CursorHold * call AutoSave()
+    autocmd CursorHoldI * call AutoSave()
+augroup END
+
 
 "------------------------------------------------------------------------------------
 " Source a global configuration file if available
