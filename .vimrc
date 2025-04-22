@@ -135,9 +135,11 @@ noremap <buffer> gk k
 
 "vim motion-----------
 noremap <C-j> 6j
-noremap H 7h
+"to leftmost execept black
+noremap H ^
 noremap <C-k> 6k
-noremap L 7l
+"to rightmost execept black
+noremap L g_
 "同时shiFft+backspace相当于6次退格
 inoremap <S-backspace> <C-h><C-h><C-h><C-h><C-h><C-h><C-h><C-h>
  
